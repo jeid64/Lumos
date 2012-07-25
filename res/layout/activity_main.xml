@@ -2,37 +2,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
+<android.view.SurfaceView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/preview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+</android.view.SurfaceView>
 
-    <Button
-        android:id="@+id/bRecord"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Light me up!" />
+<Button
+    android:id="@+id/bCast"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentTop="true"
+    android:text="Button" />
 
-    <Button
-        android:id="@+id/bShutoff"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/bRecord"
-        android:layout_centerHorizontal="true"
-        android:text="Shut me off!" />
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/bShutoff"
-        android:layout_marginTop="98dp"
-        android:text="Press light me up and then say Lumos when the google voice thing comes up. A clip begins playing, so turn on volume. It may take a couple tries until lumos is recognized." />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="25dp"
-        android:text="It was the only clip I could find." />
+<Button
+    android:id="@+id/bStop"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentLeft="true"
+    android:text="Button" />
 
 </RelativeLayout>

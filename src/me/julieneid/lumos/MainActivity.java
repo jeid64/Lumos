@@ -30,6 +30,8 @@ public class MainActivity extends Activity {
 	private Camera camera = null;
 	private boolean inPreview = false;
 	private boolean cameraConfigured = false;
+	private boolean flashLock = false;
+	private Camera.Parameters parameters;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -42,7 +44,9 @@ public class MainActivity extends Activity {
 			
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				startVoiceRecognitionActivity();
+
+				surfaceCallback.surfaceChanged(null, 0, 0,0);
+				castButton.setText("Herro");
 			}
 		});
 
@@ -100,11 +104,9 @@ public class MainActivity extends Activity {
 	
 	private void turnOnFlash() {
 		// Turn on LED  
-//		Parameters params = camera.getParameters();
-//		params.setFlashMode(Parameters.FLASH_MODE_TORCH);
-//		camera.setParameters(params);  
+		parameters.setFlashMode(Parameters.FLASH_MODE_TORCH);
 //		surfaceCallback.surfaceChanged(null, 0, 0,0);
-		ourSong.start();
+		//ourSong.start();
 	}
 	
 	private void startVoiceRecognitionActivity() {
@@ -126,7 +128,7 @@ public class MainActivity extends Activity {
 					.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 			for (int i = 0; i < matches.size(); i++) {
 				if (matches.get(i).contentEquals("lumos")) {
-					turnOnFlash();
+					flashLock = true;
 				}
 			}
 			super.onActivityResult(requestCode, resultCode, data);
@@ -162,16 +164,22 @@ public class MainActivity extends Activity {
 				Log.e("PreviewDemo-surfaceCallback",
 						"Exception in setPreviewDisplay()", t);
 			}
-
-			if (!cameraConfigured) {
-				Camera.Parameters parameters = camera.getParameters();
+			if (cameraConfigured  == false && flashLock == false) {
+				parameters = camera.getParameters();
 				Camera.Size size = getBestPreviewSize(width, height, parameters);
-
+				stopButton.setText("If statement");
 				if (size != null) {
 					parameters.setPreviewSize(size.width, size.height);
 					camera.setParameters(parameters);
 					cameraConfigured = true;
 				}
+			}
+			else if (cameraConfigured == true && flashLock == false) {
+				stopButton.setText("Else statement");
+				parameters = camera.getParameters();
+				turnOnFlash();
+				camera.setParameters(parameters);
+				flashLock = true;
 			}
 		}
 	}

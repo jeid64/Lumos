@@ -31,22 +31,24 @@ public class MainActivity extends Activity {
 	private boolean inPreview = false;
 	private boolean cameraConfigured = false;
 	private boolean flashLock = false;
+	private boolean initLock = false;
 	private Camera.Parameters parameters;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
 		init();
-		
+		if (savedInstanceState != null) {
+			initLock = savedInstanceState.getBoolean("init");
+			flashLock = savedInstanceState.getBoolean("flash");
+		}
 		castButton.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-
-				surfaceCallback.surfaceChanged(null, 0, 0,0);
-				castButton.setText("Herro");
+				turnOnFlash();
+				//startVoiceRecognitionActivity();
 			}
 		});
 
@@ -58,6 +60,15 @@ public class MainActivity extends Activity {
 			}
 		});
 
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		// TODO Auto-generated method stub
+		outState.putBoolean("init", initLock);
+		outState.putBoolean("flash", flashLock);
+		super.onSaveInstanceState(outState);
+		
 	}
 
 	@Override
@@ -100,11 +111,15 @@ public class MainActivity extends Activity {
 			castButton.setText("Recognizer not present");
 		}
 		ourSong = MediaPlayer.create(this, R.raw.wizard);
+		initLock = true;
 	}
 	
 	private void turnOnFlash() {
 		// Turn on LED  
+		parameters = camera.getParameters();
 		parameters.setFlashMode(Parameters.FLASH_MODE_TORCH);
+		camera.setParameters(parameters);
+		flashLock = true;
 //		surfaceCallback.surfaceChanged(null, 0, 0,0);
 		//ourSong.start();
 	}
@@ -128,7 +143,9 @@ public class MainActivity extends Activity {
 					.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 			for (int i = 0; i < matches.size(); i++) {
 				if (matches.get(i).contentEquals("lumos")) {
-					flashLock = true;
+					turnOnFlash();
+					surfaceCallback.surfaceChanged(null, 0, 0,0);
+					castButton.setText("Herro");
 				}
 			}
 			super.onActivityResult(requestCode, resultCode, data);
@@ -164,7 +181,7 @@ public class MainActivity extends Activity {
 				Log.e("PreviewDemo-surfaceCallback",
 						"Exception in setPreviewDisplay()", t);
 			}
-			if (cameraConfigured  == false && flashLock == false) {
+			if (cameraConfigured  == false) {
 				parameters = camera.getParameters();
 				Camera.Size size = getBestPreviewSize(width, height, parameters);
 				stopButton.setText("If statement");
@@ -174,13 +191,20 @@ public class MainActivity extends Activity {
 					cameraConfigured = true;
 				}
 			}
-			else if (cameraConfigured == true && flashLock == false) {
-				stopButton.setText("Else statement");
-				parameters = camera.getParameters();
+			if (flashLock == true)
 				turnOnFlash();
-				camera.setParameters(parameters);
-				flashLock = true;
-			}
+//			else if (cameraConfigured == true && flashLock == false) {
+//				stopButton.setText("Else statement");
+//				parameters = camera.getParameters();
+//				turnOnFlash();
+//				camera.setParameters(parameters);
+//				flashLock = true;
+//			}
+//			if (flashLock = true) {
+//				parameters = camera.getParameters();
+//				turnOnFlash();
+//				camera.setParameters(parameters);
+//			}
 		}
 	}
 
